@@ -12,7 +12,7 @@ cp .env.example .env.local
 Then choose one of these paths:
 
 - Free tier: leave API keys empty and use Extract Only mode.
-- Local env tier: add `ANTHROPIC_API_KEY` and set `ALLOW_HOST_ENRICHMENT=true` in `.env.local`.
+- Local env tier: add `ANTHROPIC_API_KEY` to `.env.local`. Host enrichment is enabled by default in local development.
 - BYOK tier: start the app and add a provider key in Settings for the current browser session.
 
 Run the app with:
@@ -47,5 +47,6 @@ The app is ready for Vercel once the output quality looks good:
 ```powershell
 vercel deploy
 ```
+
 
 

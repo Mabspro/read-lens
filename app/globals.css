@@ -119,3 +119,139 @@ button:hover:not(:disabled) {
   background: #0f1724;
   color: #cbd5e1;
 }
+
+@media (max-width: 920px) {
+  .app-shell {
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 18px;
+  }
+
+  .app-sidebar,
+  .report-shell {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .app-header,
+  .content-column,
+  .app-footer,
+  .report-shell {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .report-shell {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .header-status,
+  .settings-header,
+  .settings-actions,
+  .report-header,
+  .post-report-actions,
+  .primary-actions,
+  .empty-progress-row,
+  .markdown-summary {
+    width: 100%;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .header-status > *,
+  .settings-actions > *,
+  .primary-actions > *,
+  .post-report-actions > * {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mode-row {
+    gap: 8px !important;
+  }
+
+  .mode-row button {
+    flex: 1 1 100%;
+  }
+
+  .report-details > div {
+    display: grid !important;
+    gap: 8px !important;
+  }
+
+  .markdown-summary button {
+    width: 100%;
+  }
+
+  .settings-overlay {
+    padding: 12px !important;
+  }
+
+  .settings-panel {
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 10px !important;
+    gap: 14px;
+  }
+
+  .app-header,
+  .content-column,
+  .app-footer,
+  .report-shell {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .app-header {
+    padding-top: 18px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .content-column {
+    gap: 18px !important;
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .app-footer {
+    padding-top: 16px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .report-shell {
+    gap: 14px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .post-report-cta,
+  .markdown-export,
+  .report-details {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .settings-panel {
+    border-radius: 18px !important;
+    padding: 18px !important;
+  }
+
+  .settings-panel input,
+  .settings-panel select,
+  .settings-panel textarea,
+  .settings-panel button {
+    font-size: 16px;
+  }
+}

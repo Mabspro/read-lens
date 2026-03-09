@@ -279,6 +279,7 @@ function SettingsModal({
 
   return (
     <div
+      className="settings-overlay"
       style={{
         position: "fixed",
         inset: 0,
@@ -292,6 +293,7 @@ function SettingsModal({
       onClick={onClose}
     >
       <div
+        className="settings-panel"
         style={{
           width: "min(560px, 100%)",
           borderRadius: 22,
@@ -304,7 +306,7 @@ function SettingsModal({
         }}
         onClick={(event) => event.stopPropagation()}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "start" }}>
+        <div className="settings-header" style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "start" }}>
           <div style={{ display: "grid", gap: 6 }}>
             <strong style={{ color: "#f5f7fb", fontSize: 18 }}>Settings</strong>
             <span style={{ color: "#8b98aa", fontSize: 13 }}>
@@ -388,7 +390,7 @@ function SettingsModal({
           />
         </label>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="settings-actions" style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <button
             type="button"
             onClick={onTestConnection}
@@ -612,11 +614,11 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
     }
     if (envProviderAvailable) {
       setConnectionState("connected");
-      setConnectionMessage("Using host server key");
+      setConnectionMessage("Server key active");
       return;
     }
     setConnectionState("idle");
-    setConnectionMessage("Standard tier - no key");
+    setConnectionMessage("Free tier - extract only");
   }, [envProviderAvailable, provider, sessionKeyPresent]);
 
   useEffect(() => () => {
@@ -808,19 +810,19 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
         analyticsAvailable={Boolean(analyticsId)}
       />
 
-      <main className="app-shell" style={{ minHeight: "100vh", display: "flex", justifyContent: hasReport ? "flex-start" : "center", alignItems: "stretch", padding: hasReport ? "0 0 0 20px" : "24px 20px" }}>
+      <main className="app-shell" style={{ minHeight: "100vh", display: "flex", justifyContent: hasReport ? "flex-start" : "center", alignItems: "stretch", padding: hasReport ? "0 0 0 16px" : "24px 20px" }}>
         <aside
-          className="sidebar"
+          className="sidebar app-sidebar"
           style={{
-            width: hasReport ? 380 : "min(840px, 100%)",
-            maxWidth: hasReport ? 380 : 840,
+            width: hasReport ? 420 : "min(840px, 100%)",
+            maxWidth: hasReport ? 420 : 840,
             display: "flex",
             flexDirection: "column",
             minHeight: hasReport ? undefined : "min(80vh, 720px)",
           }}
         >
           {/* Header: logo left, status + gear right */}
-          <header style={{ padding: "24px 28px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+          <header className="app-header" style={{ padding: "24px 28px 20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -829,14 +831,38 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
                 </svg>
                 <div style={{ color: "#14b8a6", fontSize: 13, letterSpacing: "0.3em", textTransform: "uppercase", fontWeight: 800 }}>READ LENS</div>
               </div>
-              <h1 style={{ margin: "2px 0 0 0", color: "#f5f7fb", fontSize: 24, fontWeight: 700 }}>Research helper</h1>
-              <div style={{ color: "#8b98aa", fontSize: 13, marginTop: 4 }}>Fast extraction with optional BYOK analysis.</div>
+              <h1 style={{ margin: "2px 0 0 0", color: "#e2e8f0", fontSize: hasReport ? 20 : 24, lineHeight: 1.15, fontWeight: 700, maxWidth: hasReport ? 240 : "none" }}>Research helper</h1>
+              <div style={{ color: "#8b98aa", fontSize: hasReport ? 12 : 13, marginTop: 4, maxWidth: hasReport ? 260 : 360 }}>{hasReport ? "Extract, triage, and synthesize faster." : "Fast extraction with optional BYOK analysis."}</div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 999, border: `1px solid ${apiTone.border}`, background: apiTone.bg, color: "#d8fffa", padding: "8px 12px", fontSize: 12 }}>
+            <div className="header-status" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+              <button
+                type="button"
+                onClick={() => setSettingsOpen(true)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  borderRadius: 999,
+                  border: `1px solid ${apiTone.border}`,
+                  background: apiTone.bg,
+                  color: "#d8fffa",
+                  padding: "8px 12px",
+                  fontSize: 12,
+                  cursor: "pointer",
+                  transition: "background 0.2s, border 0.2s"
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = apiTone.bg.replace(/0\.\d+\)/, "0.18)");
+                  e.currentTarget.style.border = `1px solid ${apiTone.color}50`;
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = apiTone.bg;
+                  e.currentTarget.style.border = `1px solid ${apiTone.border}`;
+                }}
+              >
                 <StatusDot color={apiTone.color} pulse={connectionState === "testing"} />
                 {apiTone.label}
-              </div>
+              </button>
               <button type="button" onClick={() => setSettingsOpen(true)} aria-label="Settings" style={{ borderRadius: 999, width: 40, height: 40, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", color: "#cbd5e1", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>⚙</button>
             </div>
           </header>
@@ -845,7 +871,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
           <hr style={{ margin: 0, border: "none", height: 1, background: "rgba(255,255,255,0.06)" }} />
 
           {/* Main content: one padded column */}
-          <div style={{ flex: 1, padding: "28px 28px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
+          <div className="content-column" style={{ flex: 1, padding: "28px 28px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
             <section>
               <label style={{ display: "block", color: "var(--muted)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 10 }}>URLS TO ANALYZE</label>
               <textarea
@@ -862,12 +888,28 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
 
             {!effectiveHasKey ? (
               <p style={{ margin: 0, color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>
-                Free tier — add your API key in settings to enable AI analysis.
+                Want AI-powered summaries and research rails?{" "}
+                <button
+                  onClick={() => setSettingsOpen(true)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#2dd4bf",
+                    padding: 0,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    textDecoration: "none"
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
+                  onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+                >
+                  Add your API key &rarr;
+                </button>
               </p>
             ) : (
               <section>
                 <div style={{ color: "var(--muted)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 10 }}>ENRICHMENT MODE</div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <div className="mode-row" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                   {MODE_OPTIONS.map((opt) => (
                     <button key={opt.value} type="button" onClick={() => setMode(opt.value)} style={{ borderRadius: 999, border: mode === opt.value ? "1px solid rgba(20,184,166,0.35)" : "1px solid rgba(255,255,255,0.08)", background: mode === opt.value ? "rgba(20,184,166,0.15)" : "rgba(255,255,255,0.03)", color: mode === opt.value ? "#d8fffa" : "#cbd5e1", padding: "10px 14px", fontSize: 13, cursor: "pointer" }}>{opt.label}</button>
                   ))}
@@ -875,7 +917,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
               </section>
             )}
 
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div className="mode-row" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
                 type="button"
                 onClick={handleAnalyze}
@@ -884,7 +926,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
                   flex: "1 1 200px",
                   borderRadius: 12,
                   border: "none",
-                  background: phase === "working" ? "rgba(249,115,22,0.2)" : "linear-gradient(90deg, #f97316, #14b8a6)",
+                  background: phase === "working" ? "rgba(249,115,22,0.2)" : "linear-gradient(90deg, #fb923c, #2dd4bf)",
                   color: phase === "working" ? "#fdbba7" : "#fff",
                   padding: "14px 20px",
                   fontWeight: 700,
@@ -894,7 +936,8 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: 8
+                  gap: 8,
+                  boxShadow: phase === "working" ? "none" : "0 2px 12px rgba(251,146,60,0.25)",
                 }}>
                 {phase === "working" && <StatusDot color="#fff" pulse />}
                 {phase === "working" ? "Extracting..." : effectiveHasKey ? "Extract & Analyze" : "Extract Only"}
@@ -907,7 +950,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
             <section style={{ marginTop: 8 }}>
               <div style={{ color: "var(--muted)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 10 }}>PROGRESS</div>
               {items.length === 0 ? (
-                <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <div className="empty-progress-row" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                   <p style={{ margin: 0, color: "var(--muted)", fontSize: 13 }}>Paste a batch of links to start a run.</p>
                   <button
                     type="button"
@@ -944,23 +987,18 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
 
           {/* Footer: full-width divider + text */}
           <hr style={{ margin: 0, border: "none", height: 1, background: "rgba(255,255,255,0.06)" }} />
-          <footer style={{ padding: "20px 28px 24px" }}>
+          <footer className="app-footer" style={{ padding: "20px 28px 24px", display: "flex", flexDirection: "column", gap: 12 }}>
             <a href={supportConfig?.studioUrl || "https://levrage-studio.vercel.app"} target="_blank" rel="noreferrer" style={{ color: "#f5f7fb", textDecoration: "none", fontSize: 13, fontWeight: 700 }}>Built by LevrAge Innovation Studios</a>
-            <div style={{ color: "var(--muted)", fontSize: 12, marginTop: 6 }}>Like this tool? Support the developer</div>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 10, fontSize: 12, color: "#8b98aa" }}>
-              {supportConfig?.tipUrl && <a href={supportConfig.tipUrl} target="_blank" rel="noreferrer">Buy me a coffee</a>}
-              {supportConfig?.sponsorUrl && <a href={supportConfig.sponsorUrl} target="_blank" rel="noreferrer">GitHub Sponsor</a>}
-              {supportConfig?.githubUrl && <a href={supportConfig.githubUrl} target="_blank" rel="noreferrer">Star on GitHub</a>}
-            </div>
+            <a href={supportConfig?.tipUrl || "https://buymeacoffee.com/techandthings"} target="_blank" rel="noreferrer" style={{ color: "#5eead4", textDecoration: "none", fontSize: 12 }}>Like this tool? Support the developer</a>
           </footer>
         </aside>
 
         {hasReport ? (
-          <section style={{ flex: 1, padding: 28, display: "grid", gap: 18, alignContent: "start", animation: "slideIn 220ms ease-out" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "start", flexWrap: "wrap" }}>
+          <section className="report-shell" style={{ flex: 1, padding: 28, display: "grid", gap: 18, alignContent: "start", animation: "slideIn 220ms ease-out" }}>
+            <div className="report-header" style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "start", flexWrap: "wrap" }}>
               <div style={{ display: "grid", gap: 6 }}>
-                <div style={{ color: "#8b98aa", fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase" }}>Report</div>
-                <strong style={{ color: "#f5f7fb", fontSize: 20 }}>{report.reportTitle}</strong>
+                <div style={{ color: "#8b98aa", fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase" }}>{report.reportType === "extract_only" ? "Extracted output" : "Report"}</div>
+                <strong style={{ color: "#f5f7fb", fontSize: hasReport ? 26 : 20, lineHeight: 1.15 }}>{report.reportTitle}</strong>
                 <span style={{ color: "#8b98aa", fontSize: 13 }}>{`${report.sources.length} sources - ${generatedAt}`}</span>
               </div>
               <button
@@ -1037,43 +1075,24 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
                   }}
                 >
                   <div style={{ color: "#cbd5e1", lineHeight: 1.7 }}>
-                    Read Lens is free and built independently. If it saved you time, consider supporting the project.
+                    Read Lens is free and built independently. If it saved you time, support the project.
                   </div>
-                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                    {supportConfig?.tipUrl ? (
-                      <a
-                        href={supportConfig.tipUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          borderRadius: 14,
-                          background: "rgba(249,115,22,0.14)",
-                          border: "1px solid rgba(249,115,22,0.24)",
-                          color: "#ffe1cb",
-                          padding: "12px 16px",
-                          textDecoration: "none",
-                        }}
-                      >
-                        Buy me a coffee
-                      </a>
-                    ) : null}
-                    {supportConfig?.githubUrl ? (
-                      <a
-                        href={supportConfig.githubUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          borderRadius: 14,
-                          background: "rgba(255,255,255,0.03)",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                          color: "#f5f7fb",
-                          padding: "12px 16px",
-                          textDecoration: "none",
-                        }}
-                      >
-                        Star on GitHub
-                      </a>
-                    ) : null}
+                  <div className="post-report-actions" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                    <a
+                      href={supportConfig?.tipUrl || "https://buymeacoffee.com/techandthings"}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        borderRadius: 14,
+                        background: "rgba(249,115,22,0.14)",
+                        border: "1px solid rgba(249,115,22,0.24)",
+                        color: "#ffe1cb",
+                        padding: "12px 16px",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Buy me a coffee
+                    </a>
                     <a href={supportConfig?.studioUrl || "https://levrage-studio.vercel.app"} target="_blank" rel="noreferrer" style={{ alignSelf: "center", color: "#8bdcf7", textDecoration: "none" }}>
                       Need a custom tool built? → LevrAge Innovation Studios
                     </a>
@@ -1082,6 +1101,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
 
                 {reportStats ? (
                   <details
+                    className="report-details"
                     style={{
                       borderTop: "1px solid rgba(255,255,255,0.06)",
                       paddingTop: 14,
@@ -1103,6 +1123,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
               </div>
 
               <details
+                className="markdown-export"
                 style={{
                   borderRadius: 18,
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -1110,7 +1131,7 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
                   padding: "16px 18px",
                 }}
               >
-                <summary style={{ cursor: "pointer", color: "#cbd5e1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <summary className="markdown-summary" style={{ cursor: "pointer", color: "#cbd5e1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>Raw markdown export</span>
                   <button
                     onClick={(e) => { e.preventDefault(); handleCopy(); }}
@@ -1135,6 +1156,14 @@ export default function ResearchApp({ envProviderAvailable, analyticsId, support
     </>
   );
 }
+
+
+
+
+
+
+
+
 
 
 
